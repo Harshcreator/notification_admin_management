@@ -21,12 +21,19 @@ import { CalendarIcon } from "lucide-react";
 
 export function CreateNotificationForm() {
   const [date, setDate] = useState<Date>();
+  const [type, setType] = useState<string>('');
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = async (data: any) => {
     try {
+      if(!type) {
+        alert('Please select a notification type');
+        return;
+      }
+
       await createNotification({
         ...data,
+        type,
         scheduledFor: date?.toISOString(),
       });
       reset();
@@ -40,7 +47,7 @@ export function CreateNotificationForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
         <label className="text-sm font-medium">Type</label>
-        <Select {...register("type")}>
+        <Select value={type} onValueChange={setType}>
           <SelectTrigger>
             <SelectValue placeholder="Select notification type" />
           </SelectTrigger>
@@ -52,14 +59,15 @@ export function CreateNotificationForm() {
         </Select>
       </div>
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Title</label>
-        <Input {...register("title")} placeholder="Notification title" />
-      </div>
 
       <div className="space-y-2">
         <label className="text-sm font-medium">Message</label>
         <Textarea {...register("message")} placeholder="Notification message" />
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Recipients</label>
+        <Input {...register("recipients")} placeholder="Recipients (comma-separated)" />
       </div>
 
       <div className="space-y-2">

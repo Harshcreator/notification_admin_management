@@ -4,7 +4,7 @@ export type NotificationStatus = 'sent' | 'delivered' | 'failed';
 export interface Notification {
   id: string;
   type: NotificationType;
-  title: string;
+  recipients: string[];
   message: string;
   status: NotificationStatus;
   scheduledFor?: string;

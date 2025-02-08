@@ -36,7 +36,7 @@ export function NotificationsList() {
         <TableHeader>
           <TableRow>
             <TableHead>Type</TableHead>
-            <TableHead>Title</TableHead>
+            <TableHead>Recepients</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Scheduled For</TableHead>
             <TableHead>Created At</TableHead>
@@ -48,15 +48,15 @@ export function NotificationsList() {
               <TableCell>
                 <Badge variant="outline">{notification.type}</Badge>
               </TableCell>
-              <TableCell>{notification.title}</TableCell>
+              <TableCell>{notification.recipients}</TableCell>
               <TableCell>
                 <Badge
                   variant={
                     notification.status === "delivered"
-                      ? "success"
+                      ? "outline"
                       : notification.status === "failed"
-                      ? "destructive"
-                      : "default"
+                        ? "destructive"
+                        : "default"
                   }
                 >
                   {notification.status}

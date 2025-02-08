@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import { createServer } from 'http';
 import notificationRoutes from './routes/notificationRoutes';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -11,11 +12,16 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
 
+app.use(cors());
 app.use(express.json());
 app.use('/api/notifications', notificationRoutes);
 
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+    });
 });
 
 const PORT = process.env.PORT || 5000;

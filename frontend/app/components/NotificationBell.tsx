@@ -10,23 +10,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useEffect, useState } from "react";
 import { Notification } from "../types";
+import io from "socket.io-client";
 
 export function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const socket = io(process.env.NEXT_PUBLIC_WS_URL || "");
 
   useEffect(() => {
-    // Connect to WebSocket for real-time notifications
-    const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3001');
-    
-    ws.onmessage = (event) => {
-      const notification = JSON.parse(event.data);
-      setNotifications(prev => [notification, ...prev]);
-      setUnreadCount(prev => prev + 1);
-    };
+    socket.on('notification', (notification: Notification) => {
+        setUnreadCount((prevCount) => prevCount + 1);
+        setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+    });
 
-    return () => ws.close();
-  }, []);
+    return () => {
+        socket.disconnect();
+    };
+  }, [socket]);
+
 
   return (
     <DropdownMenu>
@@ -46,7 +47,7 @@ export function NotificationBell() {
         ) : (
           notifications.map((notification) => (
             <DropdownMenuItem key={notification.id} className="flex flex-col items-start p-4">
-              <div className="font-semibold">{notification.title}</div>
+              <div className="font-semibold">{notification.recipients}</div>
               <div className="text-sm text-gray-500">{notification.message}</div>
             </DropdownMenuItem>
           ))

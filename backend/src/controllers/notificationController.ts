@@ -9,6 +9,7 @@ export const createNotification = async (req: Request, res: Response) => {
         io.emit('notification', notification);
         res.status(201).json(notification);
     } catch (error) {
+        console.error('Error creating notification:', error);
         res.status(500).json({ error: (error as Error).message });
     }
 };
