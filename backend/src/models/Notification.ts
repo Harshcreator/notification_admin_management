@@ -5,7 +5,13 @@ const NotificationSchema = new mongoose.Schema({
     message: { type: String, required: true },
     recipients: [{ type: String }],
     scheduledTime: { type: Date },
-    status: { type: String, enum: ['pending', 'sent', 'failed'], default: 'pending' }
+    status: { 
+        type: String, 
+        enum: ['pending', 'sent', 'failed'],
+        default: function(this: any) {
+            return this.scheduledTime ? 'pending' : 'sent';
+        }
+    }
 }, { timestamps: true });
 
 export default mongoose.model('Notification', NotificationSchema);

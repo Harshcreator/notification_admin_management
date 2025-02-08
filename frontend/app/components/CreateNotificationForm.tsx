@@ -16,7 +16,7 @@ import { createNotification } from "../lib/api";
 import { NotificationType } from "../types";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 export function CreateNotificationForm() {
@@ -34,10 +34,13 @@ export function CreateNotificationForm() {
       await createNotification({
         ...data,
         type,
-        scheduledFor: date?.toISOString(),
+        scheduledTime: date,
+        status: date ? 'pending' : 'sent',
+        recipients: data.recipients.split(',').map((email: string) => email.trim()),
       });
       reset();
       setDate(undefined);
+      setType('');
     } catch (error) {
       console.error('Failed to create notification:', error);
     }

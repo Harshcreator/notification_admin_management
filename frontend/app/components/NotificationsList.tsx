@@ -21,6 +21,7 @@ export function NotificationsList() {
     const loadNotifications = async () => {
       try {
         const data = await fetchNotifications();
+        console.log('Notifications data:', data);
         setNotifications(data);
       } catch (error) {
         console.error('Failed to fetch notifications:', error);
@@ -36,15 +37,15 @@ export function NotificationsList() {
         <TableHeader>
           <TableRow>
             <TableHead>Type</TableHead>
-            <TableHead>Recepients</TableHead>
+            <TableHead>Recipients</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Scheduled For</TableHead>
+            <TableHead>Scheduled Time</TableHead>
             <TableHead>Created At</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {notifications.map((notification) => (
-            <TableRow key={notification.id}>
+            <TableRow key={notification.id ? `notification-${notification.id}` : undefined}>
               <TableCell>
                 <Badge variant="outline">{notification.type}</Badge>
               </TableCell>
@@ -52,7 +53,7 @@ export function NotificationsList() {
               <TableCell>
                 <Badge
                   variant={
-                    notification.status === "delivered"
+                    notification.status === "sent"
                       ? "outline"
                       : notification.status === "failed"
                         ? "destructive"
@@ -63,12 +64,14 @@ export function NotificationsList() {
                 </Badge>
               </TableCell>
               <TableCell>
-                {notification.scheduledFor
-                  ? format(new Date(notification.scheduledFor), "PPP")
+                {notification.scheduledTime
+                  ? format(new Date(notification.scheduledTime), "PPP")
                   : "Immediate"}
               </TableCell>
               <TableCell>
-                {format(new Date(notification.createdAt), "PPP")}
+                {notification.createdAt
+                  ? format(new Date(notification.createdAt), "PPP")
+                  : "N/A"}
               </TableCell>
             </TableRow>
           ))}

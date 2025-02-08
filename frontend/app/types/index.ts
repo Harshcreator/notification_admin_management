@@ -3,14 +3,12 @@ export type NotificationStatus = 'sent' | 'delivered' | 'failed';
 
 export interface Notification {
   id: string;
-  type: NotificationType;
+  type: 'email' | 'push' | 'in-app';
   recipients: string[];
   message: string;
-  status: NotificationStatus;
-  scheduledFor?: string;
+  scheduledTime?: string;
+  status: 'pending' | 'sent' | 'failed';
   createdAt: string;
-  targetGroups?: string[];
-  failureReason?: string;
 }
 
 export interface NotificationPreferences {
